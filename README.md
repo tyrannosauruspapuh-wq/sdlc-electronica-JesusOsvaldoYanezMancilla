@@ -1,2 +1,2 @@
-# sdlc-electronica-Jes-sOsvaldoY-ezMancilla
+# sdlc-electronica-JesusOsvaldoYanezMancilla
 Repositorio dedicado al curso EDSIA 2026
