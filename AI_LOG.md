@@ -14,3 +14,11 @@ La IA me propuso un ejercicio en el cual se usaban los grados de temperatura, ac
  **Prompt: ¿Puedes ayudarme con las actividades del día martes? aún no entiendo del todo esto de los user stories y de Gherkin, asímismo, puedes darme ejemplos de las user stories siguiendo el panorama del sensor y sus lecturas, gracias!**
 
  La IA me explico de forma un poco más clara para mi lo que le pedí hacerca de las user stories y Gherkin, también me dio los ejemplos de los US que necesitaba, ya con todo eso claro, me prpuse a modificar dichos ejemplos a una mejor manera.
+
+## Entrada 2:
+
+**Prompt: Ayudame a verificar mis User Stories, revisa lo siguiente: “¿es verificable? ¿es ambiguo? ¿qué caso borde falta?”, !gracias!**
+
+Revise lo que me dio la IA que revisara, ya que algunos escenarios no los había considerado de forma adecuada ante el proyecto.
+
+
