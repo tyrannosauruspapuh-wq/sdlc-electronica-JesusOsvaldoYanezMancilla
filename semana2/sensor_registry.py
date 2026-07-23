@@ -1,3 +1,6 @@
+
+##Código de testeo para la semana 2
+##Autor: Jesús Osvaldo Yáñez Mancilla
 class SensorNotFoundError(Exception):
     """Excepción cuando un sensor no existe en el registro."""
 
@@ -13,3 +16,4 @@ class SensorRegistry:
         if sensor_id not in self._sensors:
             raise SensorNotFoundError(f"El sensor '{sensor_id}' no existe.")
         return self._sensors[sensor_id]
+
