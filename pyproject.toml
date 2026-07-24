@@ -1,2 +1,24 @@
+
 [tool.pytest.ini_options]
-pythonpath = ["."]
+testpaths = ["semana2"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=semana2 --cov-report=term-missing --cov-fail-under=80"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # Pyflakes
+    "I",  # isort (orden de imports)
+    "UP", # pyupgrade
+    "B",  # flake8-bugbear
+]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true  # Exige anotaciones de tipo en todas las funciones

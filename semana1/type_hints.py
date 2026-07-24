@@ -1,10 +1,12 @@
 # Autor: Jesús Osvaldo Yáñez Mancilla
 # Fecha 15/07/26
-# Primer código para la semana 1, busca implementar 5 funciones de READING usando type hints complejos.
+# Primer código para la semana 1, busca implementar 5 funciones de READING usando 
+# type hints complejos.
 
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import Protocol, List
+from typing import Protocol
+
 
 class SensorType(Enum):
     TEMPERATURE = auto()  # Solo dejamos temperatura, limpio de código muerto.
@@ -48,13 +50,14 @@ def is_above_threshold(r: Reading, threshold: float) -> bool:
     return r.value > threshold
 
 
-def filter_high_readings(readings: List[Reading], threshold: float) -> List[Reading]:
+def filter_high_readings(readings: list[Reading], threshold: float) -> list[Reading]:
     """
-    Filtra una lista de lecturas y devuelve una lista NUEVA con las que superan el umbral.
+    Filtra una lista de lecturas y devuelve una lista NUEVA con las que superan
+    el umbral.
     Es pura: no altera la lista original que recibió.
     """
-    return [r for r in readings if is_above_threshold(r, threshold)
-            
+    return [r for r in readings if is_above_threshold(r, threshold)]
+
 #  FUNCIÓN PURA DE SERIALIZACIÓN
 def to_frame(r: Reading) -> bytes:
     """

@@ -1,7 +1,10 @@
 from enum import Enum, auto
- 
+
+
 class TrafficLightState(Enum):
-    RED = auto(); YELLOW = auto(); GREEN = auto()
+    RED = auto()
+    YELLOW = auto() 
+    GREEN = auto()
  
 class TrafficLightFSM:
     """El estado vive dentro del objeto, no en una variable global."""

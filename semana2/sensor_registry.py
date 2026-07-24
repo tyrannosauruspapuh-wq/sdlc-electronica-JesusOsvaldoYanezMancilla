@@ -21,7 +21,9 @@ class SensorRegistry:
         
         # Validar si el sensor ya existe
         if clean_id in self._sensors:
-            raise SensorAlreadyExistsError(f"El sensor con ID '{clean_id}' ya está registrado.")
+            raise SensorAlreadyExistsError(
+                f"El sensor con ID '{clean_id}' ya está registrado."
+                                           )
 
         sensor = {"id": clean_id, "name": name.strip()}
         self._sensors[clean_id] = sensor
