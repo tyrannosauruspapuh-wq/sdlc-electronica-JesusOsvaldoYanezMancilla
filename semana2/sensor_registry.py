@@ -1,6 +1,7 @@
 
 ##Código de testeo para la semana 2
 ##Autor: Jesús Osvaldo Yáñez Mancilla
+
 class SensorNotFoundError(Exception):
     """Excepción lanzada cuando un sensor no existe en el registro."""
     pass
