@@ -1,7 +1,8 @@
 from datetime import datetime
 
 import pytest
-from semana2.eval1.core import (
+
+from semana2.parcial1.core import (
     AlertManager,
     AnomalyDetector,
     ConsoleAlert,
