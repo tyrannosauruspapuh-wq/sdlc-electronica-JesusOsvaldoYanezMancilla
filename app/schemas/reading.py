@@ -8,6 +8,9 @@ class SensorReadingIn(BaseModel):
     value: float
     unit: str = "C"
 
+class SensorReadingUpdate(BaseModel):
+    value: float | None = None
+    unit: str | None = None
 
 class SensorReadingOut(SensorReadingIn):
     id: int
