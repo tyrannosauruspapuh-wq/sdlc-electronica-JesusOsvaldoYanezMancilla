@@ -2,7 +2,7 @@
 
 * **Estado:** Aceptado
 * **Fecha:** 2026-07-30
-* **Autor:** [Tu Nombre]
+* **Autor:** Jesús Osvaldo Yáñez Mancilla
 
 ## Contexto
 El sistema SensorHub requiere almacenar lecturas de sensores de manera persistente. En las fases iniciales del proyecto necesitamos una base de datos ligera, fácil de configurar en entornos locales y de desarrollo sin dependencias complejas de infraestructura.
