@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+alembic
+pytest
+pytest-cov
+httpx
+ruff
+mypy
+pre-commit
