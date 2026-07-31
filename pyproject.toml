@@ -16,6 +16,11 @@ select = [
     "UP", # pyupgrade
     "B",  # flake8-bugbear
 ]
+ignore = [
+    "B008", # Permite Depends() en los valores por defecto de argumentos (FastAPI)
+]
+
+
 
 [tool.mypy]
 python_version = "3.12"
