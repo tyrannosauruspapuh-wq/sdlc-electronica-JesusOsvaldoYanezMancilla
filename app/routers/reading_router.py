@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
@@ -45,10 +46,16 @@ def list_readings_by_sensor(
     sensor_id: int,
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    from_date: Annotated[datetime | None, Query(alias="from")] = None,
+    to_date: Annotated[datetime | None, Query(alias="to")] = None,
     service: ReadingService = Depends(get_reading_service),
 ) -> list[ReadingModel]:
     return service.get_readings_by_sensor(
-        sensor_id=sensor_id, limit=limit, offset=offset
+        sensor_id=sensor_id,
+        limit=limit,
+        offset=offset,
+        from_date=from_date,
+        to_date=to_date,
     )
 
 
