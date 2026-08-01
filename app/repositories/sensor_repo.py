@@ -1,14 +1,15 @@
 from collections.abc import Sequence
 
-from app.schemas.sensor import SensorCreate, SensorUpdate
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.m_sensor import SensorModel
+from app.schemas.sensor import SensorCreate, SensorUpdate
 
 
 class SensorRepository:
-    """Repositorio para manejar operaciones de base de datos relacionadas con Sensores."""
+    """Repositorio para manejar operaciones de base de datos relacionadas
+      con Sensores."""
 
     def __init__(self, session: Session) -> None:
         self.session = session

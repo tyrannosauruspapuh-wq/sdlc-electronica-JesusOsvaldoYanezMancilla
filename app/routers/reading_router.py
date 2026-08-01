@@ -1,8 +1,10 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.models.m_reading import ReadingModel
 from app.schemas.reading import ReadingCreate, ReadingResponse
 from app.services.reading_service import ReadingService
 
@@ -23,8 +25,7 @@ def create_reading(
     sensor_id: int,
     reading_data: ReadingCreate,
     service: ReadingService = Depends(get_reading_service),
-):
-    # Asignamos el sensor_id desde el path param de la URL
+) -> ReadingModel:
     reading_data.sensor_id = sensor_id
     try:
         return service.record_reading(reading_data)
@@ -32,7 +33,7 @@ def create_reading(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
-        )
+        ) from e
 
 
 @router.get(
@@ -45,7 +46,7 @@ def list_readings_by_sensor(
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
     service: ReadingService = Depends(get_reading_service),
-):
+) -> list[ReadingModel]:
     return service.get_readings_by_sensor(
         sensor_id=sensor_id, limit=limit, offset=offset
     )
@@ -59,7 +60,7 @@ def list_readings_by_sensor(
 def get_reading(
     reading_id: int,
     service: ReadingService = Depends(get_reading_service),
-):
+) -> ReadingModel:
     reading = service.get_reading_by_id(reading_id)
     if not reading:
         raise HTTPException(
@@ -77,10 +78,11 @@ def get_reading(
 def delete_reading(
     reading_id: int,
     service: ReadingService = Depends(get_reading_service),
-):
+) -> Response:
     deleted = service.delete_reading(reading_id)
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Lectura con id {reading_id} no encontrada para eliminar",
         )
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

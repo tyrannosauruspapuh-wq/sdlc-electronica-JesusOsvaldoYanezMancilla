@@ -8,7 +8,8 @@ from app.schemas.reading import ReadingCreate
 
 
 class ReadingRepository:
-    """Repositorio para manejar operaciones de base de datos relacionadas con Lecturas."""
+    """Repositorio para manejar operaciones de base de datos 
+    relacionadas con Lecturas."""
 
     def __init__(self, session: Session) -> None:
         self.session = session
