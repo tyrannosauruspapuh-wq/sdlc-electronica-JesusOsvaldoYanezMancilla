@@ -1,20 +1,35 @@
 from datetime import datetime
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from pydantic import BaseModel, Field
 
+class ReadingBase(BaseModel):
+    """Atributos base de una lectura de sensor."""
 
-class SensorReadingIn(BaseModel):
-    sensor_id: str = Field(..., examples=["TEMP-01"])
     value: float
-    unit: str = "C"
+    unit: str = Field("C", examples=["C", "F", "K"])
 
-class SensorReadingUpdate(BaseModel):
-    value: float | None = None
-    unit: str | None = None
+    @field_validator("value")
+    @classmethod
+    def validate_physical_value(cls, v: float) -> float:
+        """Validación física básica: no puede ser inferior al cero absoluto en °C."""
+        if v < -273.15:
+            raise ValueError(
+                "El valor no puede ser inferior al cero absoluto (-273.15 °C)"
+            )
+        return v
 
-class SensorReadingOut(SensorReadingIn):
+
+class ReadingCreate(ReadingBase):
+    """Esquema para registrar una nueva lectura (POST)."""
+
+    sensor_id: int
+
+
+class ReadingResponse(ReadingBase):
+    """Esquema de respuesta para las lecturas de sensor."""
+
     id: int
+    sensor_id: int
     created_at: datetime
 
-    # Permite que Pydantic lea directamente los objetos ORM de SQLAlchemy
-    model_config = {"from_attributes": True}
+    model_config = ConfigDict(from_attributes=True)
