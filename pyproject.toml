@@ -1,8 +1,8 @@
 
 [tool.pytest.ini_options]
-testpaths = ["semana2"]
+testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=semana2 --cov-report=term-missing --cov-fail-under=80"
+addopts = "-v --cov=app --cov-report=term-missing --cov-fail-under=80"
 
 [tool.ruff]
 line-length = 88
