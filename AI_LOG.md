@@ -48,3 +48,58 @@ Aquí fue más de pánico jajaja, lo que pasa es que olvidé por completo hacer 
 **Prompt: Oye es que pasó algo, dígamos que olvidé hacer otras ramas para el repositorio mientras trabajaba en esta semana, ¿me recomiendas borrar todo y empezar de nuevo o ya terminar todo así como esta? lol.**
 
 La IA me convenció de no hacer todo de nuevo (ya estoy pasado de tiempo de entrega al momento de escribir esto) y de simplemente recordar hacer todo al inicio de cada semana y actividad si es considerable.
+
+
+# Semana 3
+
+## Entrada 1:
+Al definir los modelos de Pydantic para los sensores, quería validar que las lecturas no estuvieran fuera de los rangos físicos reales (ej. temperaturas negativas imposibles para ciertos sensores).
+
+**Prompt:** "Ayúdame a hacer un validator en Pydantic v2 para que rechace temperaturas menores a -273.15 °C o mayores a 1000 °C en el esquema de SensorCreate."
+
+La IA sugirió usar `@field_validator` de Pydantic v2. Acepté la sugerencia del decorador, pero ajusté la lógica para que los límites dependieran dinámicamente del `sensor_type` (temperatura, humedad, presión) en lugar de un rango global quemado en código.
+
+---
+
+## Entrada 2:
+Estaba teniendo un enredo configurando SQLAlchemy 2.0 y la sesión asíncrona/síncrona con SQLite para los endpoints CRUD.
+
+**Prompt:** "Dame el boilerplate de database.py para SQLAlchemy 2.0 con SQLite usando sessionmaker y declarative_base."
+
+La IA me dio una configuración funcional, pero estaba mezclando sintaxis vieja de SQLAlchemy 1.4 (`declarative_base()`) con la nueva sintaxis 2.0 (`DeclarativeBase`). Rechacé la sintaxis heredada y reescribí la clase base usando `class Base(DeclarativeBase): pass` para mantener el estándar moderno que pide el programa.
+
+---
+
+## Entrada 3:
+Al integrar Alembic para gestionar las migraciones de la base de datos de SensorHub, los comandos iniciales me estaban fallando porque no detectaba los modelos.
+
+**Prompt:** "Alembic revision --autogenerate no detecta mis tablas en env.py, ¿qué me falta importar?"
+
+La IA identificó correctamente que en `env.py` faltaba importar la `Base` de mis modelos y asignar `target_metadata = Base.metadata`. Apliqué el cambio directo y pude generar la migración `init_db` sin problemas.
+
+---
+
+## Entrada 4:
+Para cumplir con el coverage de tests (>= 80%), necesitaba probar las rutas HTTP de FastAPI usando `TestClient` e `httpx`, pero no quería que los tests modificaran la base de datos local.
+
+**Prompt:** "¿Cómo puedo hacer un fixture de pytest en FastAPI para que use una base de datos SQLite en memoria (sqlite:///:memory:) durante las pruebas?"
+
+La IA propuso una fixture de `pytest` que sobreescribe la dependencia `get_db` usando `app.dependency_overrides`. Acepté la estrategia porque aísla completamente las pruebas sin tocar la base de datos de desarrollo.
+
+---
+
+## Entrada 5:
+Necesitaba documentar bien los códigos de respuesta HTTP en FastAPI para que Swagger (`/docs`) se viera impecable para la revisión.
+
+**Prompt:** "¿Cómo agrego respuestas de error personalizadas (ej. 404 Not Found) con esquemas en la decoración de una ruta de FastAPI para que aparezcan en Swagger?"
+
+La IA me sugirió usar el parámetro `responses={404: {"description": "Sensor no encontrado"}}` en los decoradores de los endpoints. Lo apliqué en los endpoints de `GET /sensors/{id}` y `DELETE /sensors/{id}` para dejar la documentación clara para mi revisor de pares.
+
+---
+
+## Entrada 6:
+Aquí fue más de pánico jajaja, lo que pasa es que olvidé por completo hacer un PR y no estaba seguro de que hacer.
+
+**Prompt:** "Oye es que pasó algo, dígamos que olvidé hacer el PR en guthub jajaja, me ayudas a tener todo listo?
+
+La IA me dió instrucciones de cómo realizar todo, resulta que era más sencillo de lo que pensaba, además de ya conocer el método.
