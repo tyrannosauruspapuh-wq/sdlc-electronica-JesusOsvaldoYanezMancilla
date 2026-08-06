@@ -4,19 +4,23 @@ from collections.abc import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
-# 1. Obtenemos la URL del entorno
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./sensorhub.db")
 
-# 2. Normalizamos la URL para PostgreSQL
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
-elif DATABASE_URL.startswith("postgresql://") and "+psycopg" not in DATABASE_URL:
-    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+# Función sugerida por la guía para normalizar la URL de la base de datos
+def get_database_url() -> str:
+    url = os.getenv("DATABASE_URL", "sqlite:///./sensorhub.db")
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql+psycopg://", 1)
+    if url.startswith("postgresql://") and "+psycopg" not in url:
+        return url.replace("postgresql://", "postgresql+psycopg://", 1)
+    return url
 
-# 3. Solo agregamos connect_args si estamos usando SQLite
+# Obtenemos la URL ya normalizada
+DATABASE_URL = get_database_url()
+
+# connect_args solo es necesario si la base de datos es SQLite
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 
-# 4. Creamos el engine dinámicamente
+# Creamos el engine con la URL resultante
 engine = create_engine(DATABASE_URL, connect_args=connect_args)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
