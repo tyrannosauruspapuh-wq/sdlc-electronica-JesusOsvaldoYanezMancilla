@@ -5,17 +5,16 @@ Revises:
 Create Date: 2026-08-06 14:14:09.919291
 
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = '01a21f29f0c9'
-down_revision: Union[str, Sequence[str], None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -39,7 +38,8 @@ def downgrade() -> None:
     sa.Column('created_at', sa.DATETIME(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_readings_sensor_id'), 'readings', ['sensor_id'], unique=False)
+    op.create_index(op.f('ix_readings_sensor_id'), 'readings', ['sensor_id'], 
+                    unique=False)
     op.create_index(op.f('ix_readings_id'), 'readings', ['id'], unique=False)
     op.create_table('sensors',
     sa.Column('id', sa.INTEGER(), nullable=False),
