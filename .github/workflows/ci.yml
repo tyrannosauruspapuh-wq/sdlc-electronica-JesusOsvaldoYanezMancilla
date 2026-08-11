@@ -32,4 +32,6 @@ jobs:
         run: mypy app --ignore-missing-imports
 
       - name: Pruebas unitarias y Cobertura (Pytest)
+        env:
+          DATABASE_URL: 'sqlite:////:memory:'
         run: pytest --cov=app --cov-fail-under=80

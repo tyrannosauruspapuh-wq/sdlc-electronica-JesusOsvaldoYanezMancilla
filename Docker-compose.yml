@@ -9,8 +9,9 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://sensor:secret@db:5432/sensorhub
     depends_on:
-      - db
-    # Sincronización en vivo (lo que viste en el tutorial)
+      db:
+        condition: service_healthy
+    # Sincronización en vivo para desarrollo
     develop:
       watch:
         - action: sync
@@ -26,8 +27,15 @@ services:
       POSTGRES_USER: sensor
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: sensorhub
+    ports:
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sensor -d sensorhub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 # Volumen persistente para que tus datos no se borren al apagar el contenedor
 volumes:
