@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia el resto del código de la aplicación
 COPY . .
 
-# Expone el puerto en el que corre FastAPI/Uvicorn
+# Expone el puerto (informativo para Docker)
 EXPOSE 8000
 
-# Comando para iniciar la aplicación
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Ejecuta Alembic para aplicar migraciones en la BD de Render y luego arranca Uvicorn usando $PORT
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
