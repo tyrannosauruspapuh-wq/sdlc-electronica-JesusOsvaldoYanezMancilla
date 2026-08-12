@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ReadingBase(BaseModel):
@@ -8,16 +8,6 @@ class ReadingBase(BaseModel):
 
     value: float
     unit: str = Field("C", examples=["C", "F", "K"])
-
-    @field_validator("value")
-    @classmethod
-    def validate_physical_value(cls, v: float) -> float:
-        """Validación física básica: no puede ser inferior al cero absoluto en °C."""
-        if v < -273.15:
-            raise ValueError(
-                "El valor no puede ser inferior al cero absoluto (-273.15 °C)"
-            )
-        return v
 
 
 class ReadingCreate(ReadingBase):

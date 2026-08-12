@@ -103,3 +103,58 @@ Aquí fue más de pánico jajaja, lo que pasa es que olvidé por completo hacer 
 **Prompt:** "Oye es que pasó algo, dígamos que olvidé hacer el PR en guthub jajaja, me ayudas a tener todo listo?
 
 La IA me dió instrucciones de cómo realizar todo, resulta que era más sencillo de lo que pensaba, además de ya conocer el método.
+
+
+# Semana 4
+
+## Entrada 1:
+Al momento de crear el archivo `render.yaml` para definir la infraestructura de mi API y PostgreSQL en Render, no estaba seguro de cómo vincular automáticamente la variable de entorno de la base de datos entre ambos servicios.
+
+**Prompt: "Crea la cuenta en https://render.com y conecta el repo como Blueprint... yo ya hice la cuenta y el archivo, que sigue? [código de render.yaml]"**
+
+La IA me explicó que debía guardar `render.yaml` en la raíz de mi repositorio y me dio los pasos paso a paso para conectar el repositorio desde el dashboard de Render en la sección de Blueprints para aprovisionar de forma automática tanto la base de datos como el servicio web.
+
+---
+
+## Entrada 2:
+Al intentar hacer el primer despliegue del Blueprint en Render, me salió un error de validación referente al comando de inicio del contenedor.
+
+**Prompt: "A Blueprint file was found, but there was an issue. services[0] docker runtime must not have startCommand"**
+
+La IA me explicó que al usar `runtime: docker` en Render no se permite usar `startCommand` en el `render.yaml`. Me dio dos opciones: reemplazarlo por `dockerCommand` o definir el arranque directamente en el `CMD` de mi `Dockerfile`.
+
+---
+
+## Entrada 3:
+Durante el proceso de despliegue en Render, el build fallaba de forma constante marcando un error de ejecución `sh: 1: alembic upgrade head && ...: not found` con código de salida `127`.
+
+**Prompt: "me dio error 127 en mi ultimo commit"**
+
+La IA analizó mis logs de Render e identificó que el error 127 ("Command not found") ocurría porque al pasar el comando completo dentro de `dockerCommand` o en comillas en `render.yaml`, el sistema operativo intentaba buscar un binario con todo el texto literal. Me recomendó mover el comando de inicio e instrucciones de Alembic directamente al `CMD` de mi `Dockerfile`.
+
+---
+
+## Entrada 4:
+Tenía dudas sobre cómo debía estructurar el comando final de mi `Dockerfile` para ejecutar las migraciones de Alembic y levantar Uvicorn considerando que Render asigna un puerto dinámico en producción.
+
+**Prompt: "mira este es mi Dockerfile, por eso es que Render no puede hacer la URL? [código de Dockerfile con --port 8000 fijo]"**
+
+La IA me señaló que tener `--port 8000` estático en el `Dockerfile` provocaba que la API no escuchara en el puerto asignado por Render (`$PORT`), y me dio la sintaxis exacta usando `CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]` para ejecutar migraciones y adaptar el puerto dinámicamente tanto en producción como en local.
+
+---
+
+## Entrada 5:
+Al probar el endpoint `GET /health` desde la interfaz interactiva de Swagger UI (`/docs`) en Render, la petición me devolvía un error de `Failed to fetch / Network Failure`.
+
+**Prompt: "otra cosa, todo funciona menos una cosa, que es el GET /health, me dice esto: Failed to fetch. Possible Reasons: CORS Network Failure..."**
+
+La IA me aclaró que el navegador bloqueaba las peticiones provenientes del origen de Swagger UI debido a la falta de políticas CORS. Me indicó cómo importar `CORSMiddleware` en `app/main.py` y configurarlo con `allow_origins=["*"]`. Una vez aplicado el cambio y subido a Git, las peticiones en Swagger comenzaron a responder con `200 OK`.
+
+---
+
+## Entrada 6:
+Como estuve realizando todo el proceso de Docker, configuración de Render y corrección de errores en una rama dedicada (`Semana-4-Docker`), tenía la duda de si hacer el merge hacia `main` afectaría el servicio activo en Render.
+
+**Prompt: "okay!, bueno, verás, todo esto lo hice en una rama aparte en mi repo, si ahora yo hago merge se descontrolaria el render no? por la rama seleccionada"**
+
+La IA me tranquilizó explicándome que realizar el merge en Git es el flujo estándar de trabajo, y me dio las instrucciones simples para fusionar la rama a `main` y posteriormente cambiar la rama activa en la sección *Settings > Build & Deploy* de Render para que los próximos despliegues automáticos respondan a los pushes en `main`.
