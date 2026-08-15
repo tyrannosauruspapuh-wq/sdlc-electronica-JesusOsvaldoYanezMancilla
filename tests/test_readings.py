@@ -78,3 +78,23 @@ def test_readings_date_filter(client: TestClient) -> None:
     )
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 0
+
+
+
+def test_readings_invalid_date_range(client: TestClient) -> None:
+    """Prueba que un rango con from superior a to devuelva un error 400 Bad Request."""
+    sensor = client.post(
+        "/sensors",
+        json={
+            "name": "Sensor Test Fechas",
+            "type": "temp",
+            "unit": "C",
+            "min_value": -10.0,
+            "max_value": 50.0,
+        },
+    ).json()
+
+    response = client.get(
+        f"/sensors/{sensor['id']}/readings?from=2026-12-31T00:00:00&to=2026-01-01T00:00:00"
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST    
