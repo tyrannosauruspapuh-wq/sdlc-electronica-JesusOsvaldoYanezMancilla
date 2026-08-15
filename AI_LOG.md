@@ -158,3 +158,27 @@ Como estuve realizando todo el proceso de Docker, configuración de Render y cor
 **Prompt: "okay!, bueno, verás, todo esto lo hice en una rama aparte en mi repo, si ahora yo hago merge se descontrolaria el render no? por la rama seleccionada"**
 
 La IA me tranquilizó explicándome que realizar el merge en Git es el flujo estándar de trabajo, y me dio las instrucciones simples para fusionar la rama a `main` y posteriormente cambiar la rama activa en la sección *Settings > Build & Deploy* de Render para que los próximos despliegues automáticos respondan a los pushes en `main`.
+
+
+# Semana 5
+
+
+## Registro de Actividad
+
+**Intento con Aider:**
+Se investigó el flujo de trabajo con la herramienta Aider (IA que opera desde la terminal y realiza commits automáticos). Debido a la necesidad de gestionar una API Key externa de proveedores como OpenAI/Gemini para la autenticación en CLI, se optó por documentar el concepto de trazabilidad y completar la tarea técnica mediante GitHub Copilot Chat en VS Code, tal como lo permite el criterio de evaluación de la actividad.
+
+**Tarea realizada:**
+Se solicitó a la IA la generación de la función inversa `fahrenheit_to_celsius` en `semana5/conversions.py`, aplicando tipado estricto (`float`) y redondeo a dos decimales.
+
+---
+
+## Comparativa: Aider vs. GitHub Copilot
+
+1. **¿En qué supera Aider a Copilot?**
+   - **Trazabilidad automática:** Aider realiza `git commit` de forma autónoma por cada cambio aceptado, haciendo que el historial de Git distinga con claridad los cambios generados por IA.
+   - **Autonomía:** Puede modificar múltiples archivos directamente en el proyecto sin que el usuario tenga que copiar y pegar manualmente.
+
+2. **¿En qué falla o complica Aider?**
+   - **Complejidad de configuración:** Requiere instalar herramientas de terminal y configurar llaves de acceso (API Keys) y variables de entorno de proveedores externos.
+   - **Curva de aprendizaje:** Al no tener interfaz gráfica visual nativa como el editor de VS Code, puede resultar menos intuitivo para revisar cambios antes de aplicarlos.
