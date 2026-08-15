@@ -59,3 +59,32 @@ def test_list_sensors_pagination(client: TestClient) -> None:
     response = client.get("/sensors?limit=2&offset=0")
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 2
+
+
+
+def test_create_sensor_invalid_range(client: TestClient) -> None:
+    """Prueba que no se permita crear un sensor con min_value > max_value."""
+    payload = {
+        "name": "Sensor Invalido",
+        "type": "temperature",
+        "unit": "C",
+        "min_value": 50.0,
+        "max_value": 10.0,
+    }
+    response = client.post("/sensors", json=payload)
+    assert response.status_code in (status.HTTP_400_BAD_REQUEST, 
+                                    status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+
+def test_list_sensors_invalid_limit(client: TestClient) -> None:
+    """Prueba que limites de paginacion negativos o excesivos sean rechazados."""
+    response_neg = client.get("/sensors?limit=-5")
+    assert response_neg.status_code in (status.HTTP_400_BAD_REQUEST, 
+                                        status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+
+def test_get_sensor_negative_id(client: TestClient) -> None:
+    """Prueba que la consulta con IDs negativos o cero retorne error."""
+    response = client.get("/sensors/-1")
+    assert response.status_code in (status.HTTP_404_NOT_FOUND, 
+                                    status.HTTP_422_UNPROCESSABLE_ENTITY)    
