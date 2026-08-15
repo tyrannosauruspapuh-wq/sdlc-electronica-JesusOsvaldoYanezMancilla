@@ -22,3 +22,4 @@ def test_sensor_repo_update_security_whitelist() -> None:
         for key in update_data.keys():
             if key not in ALLOWED_UPDATE_FIELDS:
                 raise ValueError(f"Campo '{key}' no puede actualizarse")
+            

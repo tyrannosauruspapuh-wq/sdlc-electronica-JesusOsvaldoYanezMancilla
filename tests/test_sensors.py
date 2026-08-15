@@ -88,3 +88,4 @@ def test_get_sensor_negative_id(client: TestClient) -> None:
     response = client.get("/sensors/-1")
     assert response.status_code in (status.HTTP_404_NOT_FOUND, 
                                     status.HTTP_422_UNPROCESSABLE_ENTITY)    
+    

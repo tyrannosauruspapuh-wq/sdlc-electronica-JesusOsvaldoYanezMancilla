@@ -98,3 +98,4 @@ def test_readings_invalid_date_range(client: TestClient) -> None:
         f"/sensors/{sensor['id']}/readings?from=2026-12-31T00:00:00&to=2026-01-01T00:00:00"
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST    
+    
