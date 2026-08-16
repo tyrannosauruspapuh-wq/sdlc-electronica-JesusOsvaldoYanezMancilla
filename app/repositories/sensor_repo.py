@@ -133,7 +133,7 @@ class SensorRepository:
                 delete(SensorModel).where(SensorModel.id == sensor_id)
             )
             self.session.commit()
-            return bool(result.rowcount > 0)  # Explicit bool cast
+            return bool(result.rowcount > 0)  # type: ignore[attr-defined]
         except Exception:
             self.session.rollback()
             raise
