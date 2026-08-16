@@ -1,8 +1,10 @@
 from collections.abc import Sequence
 from datetime import datetime
+from typing import cast
 
 from sqlalchemy import delete as sql_delete
 from sqlalchemy import select
+from sqlalchemy.engine import CursorResult
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -45,7 +47,7 @@ class ReadingRepository:
             raise ValueError("offset no puede ser negativo")
         if from_date and to_date and from_date > to_date:
             raise ValueError("from_date debe ser menor o igual a to_date")
-        
+
         query = select(ReadingModel).where(ReadingModel.sensor_id == sensor_id)
 
         # Filtros opcionales de rango de fechas
@@ -62,12 +64,12 @@ class ReadingRepository:
         """Delete a reading by ID. Uses direct DELETE query for better performance."""
         if reading_id <= 0:
             raise ValueError("reading_id debe ser positivo")
-        
+
         try:
             stmt = sql_delete(ReadingModel).where(ReadingModel.id == reading_id)
-            result = self.session.execute(stmt)
+            result = cast(CursorResult, self.session.execute(stmt))
             self.session.commit()
-            return bool(result.rowcount > 0)  # Explicit bool cast
+            return bool(result.rowcount > 0)
         except IntegrityError as e:
             self.session.rollback()
             raise ValueError("No se puede eliminar: hay referencias a esta lectura") from e  # noqa: E501
