@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete as sql_delete
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -10,7 +11,7 @@ from app.schemas.sensor import SensorCreate, SensorUpdate
 
 class SensorRepository:
     """Repositorio para manejar operaciones de base de datos relacionadas
-      con Sensores."""
+    con Sensores."""
 
     # Campos permitidos para actualización (whitelist de seguridad)
     ALLOWED_UPDATE_FIELDS = {"name", "type", "unit", "min_value", "max_value"}
@@ -130,10 +131,10 @@ class SensorRepository:
         try:
             # Usar bulk delete para mejor rendimiento (una sola query)
             result = self.session.execute(
-                delete(SensorModel).where(SensorModel.id == sensor_id)
+                sql_delete(SensorModel).where(SensorModel.id == sensor_id)
             )
             self.session.commit()
-            return bool(result.rowcount > 0)  # type: ignore[attr-defined]
+            return bool(getattr(result, "rowcount", 0) > 0)
         except Exception:
             self.session.rollback()
             raise
