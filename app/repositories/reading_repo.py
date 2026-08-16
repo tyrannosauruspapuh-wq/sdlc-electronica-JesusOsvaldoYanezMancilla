@@ -1,7 +1,8 @@
 from collections.abc import Sequence
 from datetime import datetime
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete as sql_delete
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -63,10 +64,10 @@ class ReadingRepository:
             raise ValueError("reading_id debe ser positivo")
         
         try:
-            stmt = delete(ReadingModel).where(ReadingModel.id == reading_id)
+            stmt = sql_delete(ReadingModel).where(ReadingModel.id == reading_id)
             result = self.session.execute(stmt)
             self.session.commit()
-            return result.rowcount > 0
+            return bool(result.rowcount > 0)  # Explicit bool cast
         except IntegrityError as e:
             self.session.rollback()
             raise ValueError("No se puede eliminar: hay referencias a esta lectura") from e  # noqa: E501

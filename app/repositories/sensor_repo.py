@@ -114,26 +114,26 @@ class SensorRepository:
 
     def delete(self, sensor_id: int) -> bool:
         """Elimina un sensor de la base de datos.
-        
+
         Args:
             sensor_id: ID del sensor a eliminar (debe ser > 0)
-            
+
         Returns:
             True si se eliminó, False si no existe
-            
+
         Raises:
             ValueError: Si sensor_id es inválido
         """
         if sensor_id <= 0:
             raise ValueError("sensor_id debe ser un entero positivo")
-        
+
         try:
             # Usar bulk delete para mejor rendimiento (una sola query)
             result = self.session.execute(
                 delete(SensorModel).where(SensorModel.id == sensor_id)
             )
             self.session.commit()
-            return result.rowcount > 0
+            return bool(result.rowcount > 0)  # Explicit bool cast
         except Exception:
             self.session.rollback()
             raise
