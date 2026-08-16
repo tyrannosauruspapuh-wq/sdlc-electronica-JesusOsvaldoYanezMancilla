@@ -182,3 +182,29 @@ Se solicitó a la IA la generación de la función inversa `fahrenheit_to_celsiu
 2. **¿En qué falla o complica Aider?**
    - **Complejidad de configuración:** Requiere instalar herramientas de terminal y configurar llaves de acceso (API Keys) y variables de entorno de proveedores externos.
    - **Curva de aprendizaje:** Al no tener interfaz gráfica visual nativa como el editor de VS Code, puede resultar menos intuitivo para revisar cambios antes de aplicarlos.
+
+
+## Entrada 1:
+Al implementar las nuevas funciones de conversión en la Semana 5, me di cuenta de que mi cobertura de código no alcanzaba el mínimo del 80% requerido por el proyecto, quedando estancada en un ~73%.
+
+**Prompt: "sin embargo me sale que aún no se llega al 80%, como se puede arreglar eso?"**
+
+La IA analizó mis archivos de prueba y detectó que los "caminos felices" estaban cubiertos, pero me faltaba probar escenarios de actualización (`PATCH`), eliminación (`DELETE`) y manejo de errores 404 en las rutas. Acepté la sugerencia y me generó los casos de prueba faltantes para completar la suite.
+
+---
+
+## Entrada 2:
+Tenía dudas de cómo integrar los nuevos bloques de pruebas dentro de la estructura exacta que ya tenía definida en mis archivos `test_readings.py` y `test_sensors.py` sin duplicar funciones o romper las aserciones existentes.
+
+**Prompt: "Puedes darme ambos códigos ya adaptados, corregidos y completo spls?"**
+
+La IA reestructuró ambos archivos de pruebas integrando los casos de prueba para los métodos de actualización, eliminación y filtrado que me faltaban. Copié el código completo a mis archivos de prueba, ejecuté `pytest` y logré subir la cobertura al 87%, superando el objetivo.
+
+---
+
+## Entrada 3:
+Tras lograr que todos los tests pasaran y alcanzar la cobertura deseada, me faltaba documentar los prompts y el proceso de interacción con la IA en el bitácora del proyecto (`AI_LOG`).
+
+**Prompt: "AWEBITO ME DIO 87% BLHEEEEEEEEEEEEEEEEE, ahora, puedes darme 3 entradas para mi AI_LOG de lo que hemos hablado ultimamente? gracias! usa esta estructura..."**
+
+La IA tomó la conversación reciente sobre la solución al problema de cobertura en `pytest` y redactó las entradas en el formato estructurado de Markdown requerido para la Semana 5, permitiéndome mantener la trazabilidad completa en el repositorio.
