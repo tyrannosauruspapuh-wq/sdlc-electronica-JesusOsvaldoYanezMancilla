@@ -15,7 +15,7 @@ class SensorModel(Base):
     max_value: Mapped[float] = mapped_column(Float, nullable=False)
 
     __table_args__ = (
-        CheckConstraint('min_value <= max_value', name='check_min_max_range'),
+        CheckConstraint("min_value <= max_value", name="check_min_max_range"),
     )
 
     # Relación con carga optimizada (evita N+1 queries)
@@ -26,22 +26,29 @@ class SensorModel(Base):
         lazy="selectin",
     )
 
-    @validates('name', 'type', 'unit')
+    @validates("name", "type", "unit")
     def validate_non_empty_strings(self, key: str, value: str) -> str:
-        """Valida que strings no sean vacíos y elimina espacios"""
+        """Valida que strings no sean vacíos y elimina espacios."""
         if not value or not value.strip():
             raise ValueError(f"{key} no puede estar vacío")
         return value.strip()
 
-    @validates('min_value', 'max_value')
+    @validates("min_value", "max_value")
     def validate_range_values(self, key: str, value: float) -> float:
-        """Valida que min_value <= max_value"""
+        """Valida que min_value <= max_value asegurando que ninguno sea None al 
+        instanciar."""
         if value is None:
             raise ValueError(f"{key} no puede ser None")
-        if hasattr(self, 'min_value') and hasattr(self, 'max_value'):
-            min_val = self.min_value if key == 'max_value' else value
-            max_val = self.max_value if key == 'min_value' else value
-            if min_val > max_val:
-                raise ValueError
-            (f"min_value ({min_val}) no puede ser mayor que max_value ({max_val})")
+
+        # Obtenemos los valores actuales de forma segura
+        current_min = value if key == "min_value" else getattr(self, "min_value", None)
+        current_max = value if key == "max_value" else getattr(self, "max_value", None)
+
+        # Solo comparamos si AMBOS ya fueron asignados y no son None
+        if current_min is not None and current_max is not None:
+            if current_min > current_max:
+                raise ValueError(
+                    f"min_value ({current_min}) no puede ser mayor que max_value ({current_max})"  # noqa: E501
+                )
+
         return value

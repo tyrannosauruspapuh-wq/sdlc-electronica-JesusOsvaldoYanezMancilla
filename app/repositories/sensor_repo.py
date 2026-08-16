@@ -13,7 +13,7 @@ class SensorRepository:
       con Sensores."""
 
     # Campos permitidos para actualización (whitelist de seguridad)
-    ALLOWED_UPDATE_FIELDS = {"name", "location", "status"}
+    ALLOWED_UPDATE_FIELDS = {"name", "type", "unit", "min_value", "max_value"}
     MAX_LIMIT = 1000
     DEFAULT_LIMIT = 20
 

@@ -50,13 +50,19 @@ def list_readings_by_sensor(
     to_date: Annotated[datetime | None, Query(alias="to")] = None,
     service: ReadingService = Depends(get_reading_service),
 ) -> list[ReadingModel]:
-    return service.get_readings_by_sensor(
-        sensor_id=sensor_id,
-        limit=limit,
-        offset=offset,
-        from_date=from_date,
-        to_date=to_date,
-    )
+    try:
+        return service.get_readings_by_sensor(
+            sensor_id=sensor_id,
+            limit=limit,
+            offset=offset,
+            from_date=from_date,
+            to_date=to_date,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
 
 
 @router.get(
@@ -68,13 +74,19 @@ def get_reading(
     reading_id: int,
     service: ReadingService = Depends(get_reading_service),
 ) -> ReadingModel:
-    reading = service.get_reading_by_id(reading_id)
-    if not reading:
+    try:
+        reading = service.get_reading_by_id(reading_id)
+        if not reading:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Lectura con id {reading_id} no encontrada",
+            )
+        return reading
+    except ValueError as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lectura con id {reading_id} no encontrada",
-        )
-    return reading
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
 
 
 @router.delete(
@@ -86,10 +98,16 @@ def delete_reading(
     reading_id: int,
     service: ReadingService = Depends(get_reading_service),
 ) -> Response:
-    deleted = service.delete_reading(reading_id)
-    if not deleted:
+    try:
+        deleted = service.delete_reading(reading_id)
+        if not deleted:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Lectura con id {reading_id} no encontrada para eliminar",
+            )
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    except ValueError as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Lectura con id {reading_id} no encontrada para eliminar",
-        )
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
