@@ -1,7 +1,11 @@
 from collections.abc import Sequence
 from datetime import datetime
+from typing import cast
 
+from sqlalchemy import delete as sql_delete
 from sqlalchemy import select
+from sqlalchemy.engine import CursorResult
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.m_reading import ReadingModel
@@ -13,11 +17,15 @@ class ReadingRepository:
         self.session = session
 
     def create(self, reading_data: ReadingCreate) -> ReadingModel:
-        db_reading = ReadingModel(**reading_data.model_dump())
-        self.session.add(db_reading)
-        self.session.commit()
-        self.session.refresh(db_reading)
-        return db_reading
+        try:
+            db_reading = ReadingModel(**reading_data.model_dump())
+            self.session.add(db_reading)
+            self.session.commit()
+            self.session.flush()  # Ensure ID is assigned without extra query
+            return db_reading
+        except IntegrityError as e:
+            self.session.rollback()
+            raise ValueError("Lectura duplicada o datos inválidos") from e
 
     def get_by_id(self, reading_id: int) -> ReadingModel | None:
         return self.session.get(ReadingModel, reading_id)
@@ -30,6 +38,16 @@ class ReadingRepository:
         from_date: datetime | None = None,
         to_date: datetime | None = None,
     ) -> list[ReadingModel]:
+        # Validar parámetros
+        if sensor_id <= 0:
+            raise ValueError("sensor_id debe ser positivo")
+        if limit < 0:
+            raise ValueError("limit no puede ser negativo")
+        if offset < 0:
+            raise ValueError("offset no puede ser negativo")
+        if from_date and to_date and from_date > to_date:
+            raise ValueError("from_date debe ser menor o igual a to_date")
+
         query = select(ReadingModel).where(ReadingModel.sensor_id == sensor_id)
 
         # Filtros opcionales de rango de fechas
@@ -43,9 +61,15 @@ class ReadingRepository:
         return list(results)
 
     def delete(self, reading_id: int) -> bool:
-        db_reading = self.get_by_id(reading_id)
-        if not db_reading:
-            return False
-        self.session.delete(db_reading)
-        self.session.commit()
-        return True
+        """Delete a reading by ID. Uses direct DELETE query for better performance."""
+        if reading_id <= 0:
+            raise ValueError("reading_id debe ser positivo")
+
+        try:
+            stmt = sql_delete(ReadingModel).where(ReadingModel.id == reading_id)
+            result = cast(CursorResult, self.session.execute(stmt))
+            self.session.commit()
+            return bool(result.rowcount > 0)
+        except IntegrityError as e:
+            self.session.rollback()
+            raise ValueError("No se puede eliminar: hay referencias a esta lectura") from e  # noqa: E501

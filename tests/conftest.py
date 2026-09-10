@@ -45,3 +45,4 @@ def client_fixture(session: Session) -> Generator[TestClient, None, None]:
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()
+    
